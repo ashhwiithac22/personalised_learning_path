@@ -1,4 +1,4 @@
-# Student Dropout Prediction System
+# Student Dropout Prediction System Using ML
 
 A comprehensive Machine Learning system that predicts student dropout risk, analyzes learning patterns, and provides personalized career guidance using advanced analytics and predictive modeling.
 
