@@ -6,4 +6,5 @@ scikit-learn
 xgboost
 plotly
 joblib
+seaborn==0.12.2
 --only-binary=all
