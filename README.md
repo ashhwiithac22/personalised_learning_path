@@ -57,9 +57,11 @@ python -m streamlit run app.py
 - Benefits:  
   - Early intervention identifies at-risk students 4–6 weeks in advance  
   - Personalized support improves student retention by 35%
-  - 
-  ---
-  ### 🔮 Future Enhancements 
+
+
+🌐 **Live Demo:** [Student Dropout Prediction App](https://student-dropout-prediction-ml.streamlit.app/)
+
+### 🔮 Future Enhancements 
 
 Planned improvements include LMS integration, real-time predictions, advanced analytics dashboards, and mobile support. Dataset features, preprocessing, and key model metrics are included, along with screenshots of dashboards, clustering, and feature importance charts. 
 
