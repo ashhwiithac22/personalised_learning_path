@@ -14,21 +14,6 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 import warnings
 warnings.filterwarnings('ignore')
 
-# Import neural network libraries
-try:
-    import tensorflow as tf
-    from tensorflow.keras.models import Sequential
-    from tensorflow.keras.layers import Dense, Dropout, BatchNormalization
-    from tensorflow.keras.optimizers import Adam
-    from tensorflow.keras.utils import to_categorical
-    from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
-    from tensorflow.keras.wrappers.scikit_learn import KerasClassifier
-    NEURAL_NETWORKS_AVAILABLE = True
-    print("✅ TensorFlow successfully imported")
-except ImportError as e:
-    print(f"⚠️ TensorFlow not available. Neural Networks will be disabled. Error: {str(e)}")
-    NEURAL_NETWORKS_AVAILABLE = False
-
 class DropoutPredictor:
     def __init__(self):
         self.models = {
@@ -41,10 +26,6 @@ class DropoutPredictor:
             'Gradient Boosting': GradientBoostingClassifier(random_state=42)
         }
         
-        # Add Neural Network if available
-        if NEURAL_NETWORKS_AVAILABLE:
-            self.models['Neural Network'] = self._create_neural_network()
-        
         self.results = {}
         self.feature_importances = {}
         self.scaler = StandardScaler()
@@ -54,47 +35,6 @@ class DropoutPredictor:
         self.feature_names = None
         self.confusion_matrices = {}
         
-    def _create_neural_network(self):
-        """Create a neural network model with proper input shape handling"""
-        def create_model(input_dim=None):
-            model = Sequential()
-            
-            # Input layer with proper input shape
-            model.add(Dense(128, activation='relu', input_shape=(input_dim,)))
-            model.add(BatchNormalization())
-            model.add(Dropout(0.4))
-            
-            # Hidden layers
-            model.add(Dense(64, activation='relu'))
-            model.add(BatchNormalization())
-            model.add(Dropout(0.3))
-            
-            model.add(Dense(32, activation='relu'))
-            model.add(Dropout(0.2))
-            
-            # Output layer for binary classification
-            model.add(Dense(1, activation='sigmoid'))
-            
-            # Compile model
-            model.compile(
-                optimizer=Adam(learning_rate=0.001),
-                loss='binary_crossentropy',
-                metrics=['accuracy']
-            )
-            return model
-        
-        # Return a wrapper that will be properly initialized later
-        return lambda input_dim: KerasClassifier(
-            build_fn=lambda: create_model(input_dim=input_dim),
-            epochs=100,
-            batch_size=32,
-            verbose=0,
-            validation_split=0.2,
-            callbacks=[
-                EarlyStopping(patience=10, restore_best_weights=True),
-                ReduceLROnPlateau(factor=0.5, patience=5)
-            ]
-        )
     
     def load_and_preprocess_data(self, file_path=None):
         """Load and preprocess the dropout dataset"""
@@ -222,29 +162,12 @@ class DropoutPredictor:
         for name, model in self.models.items():
             try:
                 print(f"🔧 Training {name}...")
-                
-                # Special handling for Neural Network
-                if name == 'Neural Network' and NEURAL_NETWORKS_AVAILABLE:
-                    # Initialize neural network with correct input dimension
-                    input_dim = X_train.shape[1]
-                    neural_network = model(input_dim)
-                    
-                    # Train neural network
-                    history = neural_network.fit(X_train, y_train)
-                    trained_model = neural_network
+                model.fit(X_train, y_train)
+                trained_model = model
                     
                     # Make predictions
-                    y_pred_proba = neural_network.predict_proba(X_test)
-                    y_pred = (y_pred_proba[:, 1] > 0.5).astype(int)
-                    
-                else:
-                    # Train other models
-                    model.fit(X_train, y_train)
-                    trained_model = model
-                    
-                    # Make predictions
-                    y_pred = model.predict(X_test)
-                    y_pred_proba = model.predict_proba(X_test)[:, 1] if hasattr(model, 'predict_proba') else None
+                y_pred = model.predict(X_test)
+                y_pred_proba = model.predict_proba(X_test)[:, 1] if hasattr(model, 'predict_proba') else None
                 
                 # Calculate comprehensive metrics
                 accuracy = accuracy_score(y_test, y_pred)
@@ -256,15 +179,8 @@ class DropoutPredictor:
                 # Store confusion matrix
                 cm = confusion_matrix(y_test, y_pred)
                 self.confusion_matrices[name] = cm
-                
-                # Cross-validation (skip for Neural Network as it's slow)
-                if name != 'Neural Network':
-                    cv_scores = cross_val_score(model, X_train, y_train, cv=3, scoring='accuracy')
-                    cv_mean = cv_scores.mean()
-                    cv_std = cv_scores.std()
-                else:
-                    cv_mean = accuracy  # Use accuracy as proxy for CV
-                    cv_std = 0.0
+                cv_mean = accuracy  # Use accuracy as proxy for CV
+                cv_std = 0.0
                 
                 # Store feature importances if available
                 if hasattr(trained_model, 'feature_importances_'):

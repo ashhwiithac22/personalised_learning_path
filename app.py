@@ -27,7 +27,6 @@ from src.classification import (
     display_model_comparison,
     run_dropout_prediction,
     DropoutPredictor,
-    NEURAL_NETWORKS_AVAILABLE
 )
 from src.prediction import predict_new_student
 
@@ -38,214 +37,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
-def get_student_interests():
-    """Get student interests for personalized learning path with single choice"""
-    st.subheader("🎯 Student Interest Assessment")
-    
-    st.info("""
-    **To provide you with a personalized learning path recommendation, 
-    please select your preferred career interest:**
-    """)
-    
-    interest = st.selectbox(
-        "Select your area of interest:",
-        ["Choose an option", "Web Development", "Cybersecurity", "Data Analytics", "Full Stack Development"],
-        help="Choose one area that interests you the most"
-    )
-    
-    # Add a button to generate learning path
-    if interest != "Choose an option":
-        if st.button("🚀 Generate Learning Path", type="primary", use_container_width=True):
-            return interest
-    return None
-
-def display_learning_path_tree(interest):
-    """Display personalized learning path tree based on student interest"""
-    
-    st.subheader(f"🌳 Personalized Learning Path: {interest}")
-    
-    if interest == "Web Development":
-        tree_structure = """
-        ```
-        🌐 Web Development Learning Path
-        │
-        ├── HTML?
-        │   ├── Yes → CSS?
-        │   │   ├── Yes → Bootstrap?
-        │   │   │   ├── Yes → JavaScript?
-        │   │   │   │   ├── Yes → GitHub → 🎯 Ready for Projects
-        │   │   │   │   └── No → Learn JavaScript First
-        │   │   │   └── No → Learn Bootstrap First
-        │   │   └── No → Learn CSS First
-        │   └── No → Start with HTML Basics
-        ```
-        """
-        st.markdown(tree_structure)
-        
-        st.info("""
-        **Web Development Roadmap:**
-        1. **HTML**: Structure and semantics
-        2. **CSS**: Styling and layout
-        3. **Bootstrap**: Responsive design framework
-        4. **JavaScript**: Interactive functionality
-        5. **GitHub**: Version control and collaboration
-        6. **Projects**: Build real-world applications
-        """)
-        
-    elif interest == "Cybersecurity":
-        tree_structure = """
-        ```
-        🔒 Cybersecurity Learning Path
-        │
-        ├── Computer Networks?
-        │   ├── Yes → Operating Systems (Linux)?
-        │   │   ├── Yes → Security Tools?
-        │   │   │   ├── Yes → Ethical Hacking → 🎯 Security Expert
-        │   │   │   └── No → Learn Tools (Wireshark, Kali, Metasploit)
-        │   │   └── No → Learn Linux Fundamentals
-        │   └── No → Start with Computer Networks
-        ```
-        """
-        st.markdown(tree_structure)
-        
-        st.info("""
-        **Cybersecurity Roadmap:**
-        1. **Computer Networks**: TCP/IP, protocols, network architecture
-        2. **Linux OS**: Command line, system administration
-        3. **Security Tools**: Wireshark, Kali Linux, Metasploit
-        4. **Ethical Hacking**: Penetration testing, vulnerability assessment
-        5. **Security Frameworks**: NIST, ISO 27001
-        6. **Certifications**: CEH, Security+, CISSP
-        """)
-        
-    elif interest == "Data Analytics":
-        tree_structure = """
-        ```
-        📊 Data Analytics Learning Path
-        │
-        ├── Statistics?
-        │   ├── Yes → Excel/Google Sheets?
-        │   │   ├── Yes → SQL?
-        │   │   │   ├── Yes → Python?
-        │   │   │   │   ├── Yes → Power BI/Tableau → 🎯 Data Analyst
-        │   │   │   │   └── No → Learn Python for Data Analysis
-        │   │   │   └── No → Learn SQL for Data Querying
-        │   │   └── No → Master Spreadsheet Analysis
-        │   └── No → Learn Statistical Fundamentals
-        ```
-        """
-        st.markdown(tree_structure)
-        
-        st.info("""
-        **Data Analytics Roadmap:**
-        1. **Statistics**: Probability, distributions, hypothesis testing
-        2. **Spreadsheets**: Excel, Google Sheets for data manipulation
-        3. **SQL**: Database querying and management
-        4. **Python**: Pandas, NumPy, data visualization
-        5. **BI Tools**: Power BI, Tableau for dashboards
-        6. **Machine Learning**: Basic predictive modeling
-        """)
-        
-    elif interest == "Full Stack Development":
-        tree_structure = """
-        ```
-        🚀 Full Stack Development Learning Path
-        │
-        ├── Web Basics (HTML/CSS/JS)?
-        │   ├── Yes → ReactJS?
-        │   │   ├── Yes → Tailwind CSS?
-        │   │   │   ├── Yes → API Handling?
-        │   │   │   │   ├── Yes → Database → 🎯 Full Stack Developer
-        │   │   │   │   └── No → Learn RESTful APIs
-        │   │   │   └── No → Learn Tailwind CSS
-        │   │   └── No → Learn ReactJS Framework
-        │   └── No → Master Web Fundamentals First
-        ```
-        """
-        st.markdown(tree_structure)
-        
-        st.info("""
-        **Full Stack Development Roadmap:**
-        1. **Frontend**: HTML, CSS, JavaScript, React
-        2. **Styling**: Tailwind CSS, responsive design
-        3. **Backend**: Node.js, Express, API development
-        4. **Database**: MongoDB, PostgreSQL, data modeling
-        5. **DevOps**: Deployment, cloud platforms
-        6. **Projects**: End-to-end application development
-        """)
-
-def provide_personalized_recommendations(interest, dropout_prediction):
-    """Provide personalized learning recommendations based on interest and risk level"""
-    
-    st.subheader("💡 Personalized Learning Recommendations")
-    
-    if dropout_prediction == 1:
-        st.warning("""
-        **🚨 Based on your high dropout risk assessment, we recommend:**
-        
-        **Immediate Focus Areas:**
-        1. **Foundational Skills First**: Start with basic concepts to build confidence
-        2. **Structured Learning Path**: Follow the recommended tree structure step-by-step
-        3. **Regular Progress Checks**: Set small, achievable milestones
-        4. **Support System**: Engage with mentors and peer groups
-        5. **Flexible Pace**: Don't rush - focus on understanding fundamentals
-        """)
-    else:
-        st.success("""
-        **✅ Based on your low dropout risk assessment, you can:**
-        
-        **Accelerated Learning Approach:**
-        1. **Comprehensive Coverage**: Follow the complete learning path
-        2. **Advanced Topics**: Explore specialized areas within your interests
-        3. **Project-Based Learning**: Build real projects to reinforce skills
-        4. **Community Engagement**: Participate in open source and coding communities
-        5. **Career Preparation**: Focus on portfolio development and interview skills
-        """)
-    
-    # Display learning path for the selected interest
-    display_learning_path_tree(interest)
-    
-    # Add specific recommendations for the interest
-    if interest == "Web Development":
-        st.info("""
-        **Web Development Quick Start:**
-        - **Week 1-2**: HTML & CSS fundamentals
-        - **Week 3-4**: JavaScript basics and DOM manipulation
-        - **Week 5-6**: Responsive design with Bootstrap
-        - **Week 7-8**: Version control with Git/GitHub
-        - **Week 9-12**: Build a portfolio project
-        """)
-        
-    elif interest == "Cybersecurity":
-        st.info("""
-        **Cybersecurity Quick Start:**
-        - **Week 1-2**: Network fundamentals and protocols
-        - **Week 3-4**: Linux command line and system basics
-        - **Week 5-6**: Introduction to security tools
-        - **Week 7-8**: Vulnerability assessment basics
-        - **Week 9-12**: Hands-on security lab exercises
-        """)
-        
-    elif interest == "Data Analytics":
-        st.info("""
-        **Data Analytics Quick Start:**
-        - **Week 1-2**: Statistical fundamentals and Excel
-        - **Week 3-4**: SQL for data querying
-        - **Week 5-6**: Python basics for data analysis
-        - **Week 7-8**: Data visualization with Python/Tableau
-        - **Week 9-12**: Complete a data analysis project
-        """)
-        
-    elif interest == "Full Stack Development":
-        st.info("""
-        **Full Stack Development Quick Start:**
-        - **Week 1-3**: Frontend fundamentals (HTML, CSS, JS)
-        - **Week 4-6**: React.js and modern frontend development
-        - **Week 7-8**: Backend development with Node.js
-        - **Week 9-10**: Database integration and APIs
-        - **Week 11-12**: Full stack project deployment
-        """)
 
 def main():
     # Custom CSS for better styling
@@ -292,14 +83,6 @@ def main():
         border: 1px solid #e0e0e0;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    .neural-network-badge {
-        background-color: #ff6b6b;
-        color: white;
-        padding: 0.2rem 0.5rem;
-        border-radius: 0.25rem;
-        font-size: 0.8rem;
-        font-weight: bold;
-    }
     .learning-path-button {
         background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
         color: white;
@@ -334,7 +117,6 @@ def main():
         "👥 Clustering Analysis",
         "🔮 Classification Models",
         "🎯 New Student Prediction",
-        "🤖 AI Learning Paths",
         "ℹ️ About"
     ])
     
@@ -374,7 +156,6 @@ def main():
         st.rerun()
     
     st.sidebar.markdown("---")
-    st.sidebar.markdown("Built with ❤️ using Streamlit")
     
     try:
         # Handle different app modes
@@ -398,9 +179,6 @@ def main():
             
         elif app_mode == "🎯 New Student Prediction":
             display_prediction_section(df, preprocessor)
-            
-        elif app_mode == "🤖 AI Learning Paths":
-            display_learning_paths_section()
             
         elif app_mode == "ℹ️ About":
             display_about_section()
@@ -576,9 +354,6 @@ def display_classification_models(df):
         st.error("❌ Target variable 'Dropout_encoded' not found in dataset")
         return
     
-    # Display neural network availability
-    if NEURAL_NETWORKS_AVAILABLE:
-        st.success("🧠 Neural Networks: Available (TensorFlow)")
     
     # Model training section
     st.markdown("### 🚀 Model Training")
@@ -657,15 +432,11 @@ def display_model_summary_table(results_df):
     display_df = results_df.copy()
     
     # Convert all numeric columns to proper format
-    numeric_columns = ['Accuracy', 'Precision', 'Recall', 'F1_Score', 'AUC_Score', 'CV_Score', 'CV_Std', 'Fit_Time']
+    numeric_columns = ['Accuracy', 'Precision', 'Recall', 'F1_Score', 'AUC_Score', 'CV_Score', 'CV_Std']
     
     for col in numeric_columns:
         if col in display_df.columns:
-            if col == 'Fit_Time':
-                display_df[col] = display_df[col].apply(
-                    lambda x: f'{float(x):.3f}s' if isinstance(x, (int, float)) else str(x)
-                )
-            elif col == 'CV_Std':
+            if col == 'CV_Std':
                 display_df[col] = display_df[col].apply(
                     lambda x: f'±{float(x):.4f}' if isinstance(x, (int, float)) else str(x)
                 )
@@ -674,16 +445,8 @@ def display_model_summary_table(results_df):
                     lambda x: f'{float(x):.4f}' if isinstance(x, (int, float)) else str(x)
                 )
     
-    # Highlight Neural Network
-    def highlight_neural_network(row):
-        if row['Model'] == 'Neural Network':
-            return ['background-color: #ffebee'] * len(row)
-        return [''] * len(row)
-    
-    styled_df = display_df.style.apply(highlight_neural_network, axis=1)
-    
     # Display the table
-    st.dataframe(styled_df, use_container_width=True)
+    st.dataframe(display_df, use_container_width=True)
     
     # Add some statistics
     col1, col2, col3, col4 = st.columns(4)
@@ -716,7 +479,7 @@ def display_performance_charts(results_df):
     
     # Convert to numeric for plotting
     plot_df = results_df.copy()
-    numeric_columns = ['Accuracy', 'Precision', 'Recall', 'F1_Score', 'AUC_Score', 'CV_Score', 'Fit_Time']
+    numeric_columns = ['Accuracy', 'Precision', 'Recall', 'F1_Score', 'AUC_Score', 'CV_Score']
     
     for col in numeric_columns:
         if col in plot_df.columns:
@@ -734,11 +497,10 @@ def display_performance_charts(results_df):
         x = np.arange(len(plot_df))
         width = 0.35
         
-        # Use different colors for Neural Network
-        colors = ['#2E86AB' if model != 'Neural Network' else '#FF6B6B' for model in plot_df['Model']]
+        colors = ['#2E86AB', '#A23B72', '#F18F01', '#C73E1D', '#3B1F2B', '#6A8EAE', '#1D7874']
         
-        bars1 = ax.bar(x - width/2, plot_df['Accuracy'], width, label='Accuracy', alpha=0.8, color=colors)
-        bars2 = ax.bar(x + width/2, plot_df['F1_Score'], width, label='F1-Score', alpha=0.8, color=colors)
+        bars1 = ax.bar(x - width/2, plot_df['Accuracy'], width, label='Accuracy', alpha=0.8, color=colors[:len(plot_df)])
+        bars2 = ax.bar(x + width/2, plot_df['F1_Score'], width, label='F1-Score', alpha=0.8, color=colors[:len(plot_df)])
         
         ax.set_xlabel('Models')
         ax.set_ylabel('Scores')
@@ -756,11 +518,9 @@ def display_performance_charts(results_df):
         
         x = np.arange(len(plot_df))
         width = 0.35
-        
-        colors = ['#2E86AB' if model != 'Neural Network' else '#FF6B6B' for model in plot_df['Model']]
-        
-        bars1 = ax.bar(x - width/2, plot_df['Precision'], width, label='Precision', alpha=0.8, color=colors)
-        bars2 = ax.bar(x + width/2, plot_df['Recall'], width, label='Recall', alpha=0.8, color=colors)
+                
+        bars1 = ax.bar(x - width/2, plot_df['Precision'], width, label='Precision', alpha=0.8, color=colors[:len(plot_df)])
+        bars2 = ax.bar(x + width/2, plot_df['Recall'], width, label='Recall', alpha=0.8, color=colors[:len(plot_df)])
         
         ax.set_xlabel('Models')
         ax.set_ylabel('Scores')
@@ -783,9 +543,6 @@ def display_best_model_details(results_df, predictor):
         
         # Display best model card
         st.markdown(f"### 🎯 {best_model['Model']}")
-        
-        if best_model['Model'] == 'Neural Network':
-            st.markdown('<span class="neural-network-badge">NEURAL NETWORK</span>', unsafe_allow_html=True)
         
         # Create metrics in columns
         col1, col2, col3, col4 = st.columns(4)
@@ -811,7 +568,7 @@ def display_best_model_details(results_df, predictor):
             st.markdown('</div>', unsafe_allow_html=True)
         
         # Additional metrics
-        col5, col6, col7 = st.columns(3)
+        col5, col6 = st.columns(2)
         
         with col5:
             cv_score = best_model['CV_Score']
@@ -822,11 +579,6 @@ def display_best_model_details(results_df, predictor):
             auc_score = best_model.get('AUC_Score', 'N/A')
             if isinstance(auc_score, (int, float)):
                 st.metric("AUC Score", f"{auc_score:.4f}")
-        
-        with col7:
-            fit_time = best_model.get('Fit_Time', 'N/A')
-            if isinstance(fit_time, (int, float)):
-                st.metric("Training Time", f"{fit_time:.3f}s")
         
         # Best model insights
         st.markdown("### 💡 Best Model Insights")
@@ -867,9 +619,6 @@ def display_individual_model_details(results_df, predictor):
         # Display model card
         st.markdown(f"### {selected_model}")
         
-        if selected_model == 'Neural Network':
-            st.markdown('<span class="neural-network-badge">DEEP LEARNING</span>', unsafe_allow_html=True)
-        
         # Performance metrics
         col1, col2 = st.columns(2)
         
@@ -894,12 +643,6 @@ def display_individual_model_details(results_df, predictor):
                 st.write(f"- **AUC Score:** {auc_score:.4f}")
             else:
                 st.write(f"- **AUC Score:** {auc_score}")
-            
-            fit_time = model_data.get('Fit_Time', 'N/A')
-            if isinstance(fit_time, (int, float)):
-                st.write(f"- **Training Time:** {fit_time:.3f}s")
-            else:
-                st.write(f"- **Training Time:** {fit_time}")
         
         # Model ranking
         st.markdown("**📈 Model Ranking:**")
@@ -948,57 +691,9 @@ def display_prediction_section(df, preprocessor):
         
         return
     
-    # Make prediction - this will now automatically show learning paths for high-risk students
+    # Make prediction
     st.info("🔍 Fill out the form below to predict dropout risk for a new student.")
     prediction_result = predict_new_student(df, preprocessor)
-
-def display_learning_paths_section():
-    """Display dedicated section for AI learning paths"""
-    st.markdown('<h2 class="section-header">🤖 AI Learning Paths</h2>', unsafe_allow_html=True)
-    
-    st.info("""
-    **Explore personalized learning paths for different career domains.**
-    Select your area of interest and generate a customized learning roadmap.
-    """)
-    
-    # Get student interest with button
-    selected_interest = get_student_interests()
-    
-    if selected_interest:
-        # Display personalized recommendations (assuming high dropout risk for dedicated section)
-        provide_personalized_recommendations(selected_interest, 1)
-    
-    # Show all available learning paths
-    st.markdown("---")
-    st.subheader("📚 Available Career Paths")
-    
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown("""
-        **🌐 Web Development**
-        - Frontend & Backend Development
-        - Modern frameworks and tools
-        - Full project lifecycle
-        
-        **🔒 Cybersecurity**
-        - Network security & ethical hacking
-        - Security tools and frameworks
-        - Threat detection and prevention
-        """)
-    
-    with col2:
-        st.markdown("""
-        **📊 Data Analytics**
-        - Data processing & visualization
-        - Statistical analysis & ML basics
-        - Business intelligence tools
-        
-        **🚀 Full Stack Development**
-        - End-to-end web development
-        - Database management & APIs
-        - Deployment & DevOps basics
-        """)
 
 def display_about_section():
     """Display about section"""
@@ -1021,16 +716,15 @@ def display_about_section():
         - **📊 Data Analytics**: Comprehensive EDA and visualization
         - **👥 Student Clustering**: Group students by learning styles
         - **🔮 Dropout Prediction**: ML models to predict at-risk students
-        - **🧠 Neural Networks**: Deep learning for advanced predictions
         - **🎯 Career Guidance**: Personalized recommendations for dropouts
         - **📈 Interactive Dashboard**: User-friendly Streamlit interface
         
         ### 🛠️ Technical Stack
         
         - **Framework**: Streamlit
-        - **ML Library**: Scikit-learn, TensorFlow/Keras
+        - **ML Library**: Scikit-learn, XGBoost
         - **Data Processing**: Pandas, NumPy
-        - **Visualization**: Plotly, Matplotlib, Seaborn
+        - **Visualization**: Matplotlib, Seaborn
         - **Model Persistence**: Joblib
         """)
     
@@ -1064,7 +758,6 @@ if 'predictor' not in st.session_state:
     st.session_state.predictor = None
 if 'results_df' not in st.session_state:
     st.session_state.results_df = None
-
 
 if __name__ == "__main__":
     main()
